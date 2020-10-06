@@ -104,7 +104,7 @@ think about half of the 60 failures are just nim-devel vs. nim-1.2.0 things.
 I also realize this is a very partial test (only 15%!).  Compiling to a binary
 and searching for Error: was a simple, easy thing for me to run/test.  Note that
 the automated fix up style here means `nimp` users need not rely on any real
-approval with *anyone*..neither `nimble` nor dependency maintainers.  If you are
+approval from *anyone*..neither `nimble` nor dependency maintainers.  If you are
 a package-user who cannot persuade a package-maintainer to fix up an origin repo
 then I am happy to take PRs for `%` fix-up scripts.
 
