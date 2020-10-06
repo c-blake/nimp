@@ -75,7 +75,7 @@ me to stay up-to-date-but-for-my-patch.  One can also use these to make
 otherwise `nimp`-uninstallable packages work fine as per the next section.
 
 As evident from `nim.nvim` above, `nimp get|up` also work on *non-Nim repos* &
-things not in `packages.json`.  `nimp u`  runs in parallel and is usually very
+URIs not in `packages.json`.  `nimp u`  runs in parallel and is usually very
 fast (10 seconds to git pull *the whole Nimbleverse* on a fast network) and only
 emits output for things not up-to-date/failing.
 
