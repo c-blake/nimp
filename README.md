@@ -70,11 +70,11 @@ There are other hook scripts.  Right now I use them to fix dependency packages:
 non-package-maintainers "massage" imperfect packages to be more compliant with
 an installed package set.  For example, I have had a tiny patch I keep against
 @alaviss 's `nim.nvim` package.  With a patch file, and simple NimScripts, I
-allow "nimp up" to reverse my patch, git pull, & re-apply my patch, allowing me
-to stay up-to-date-but-for-my-patch.  One can also use these to make otherwise
-`nimp`-uninstallable packages installable as per the next section.
+allow `nimp up` to reverse my patch, `git pull`, & re-apply my patch, allowing
+me to stay up-to-date-but-for-my-patch.  One can also use these to make
+otherwise `nimp`-uninstallable packages work fine as per the next section.
 
-As evident from `nim.nvim` above, `nimp get|up` also work on *non-Nim repos* and
+As evident from `nim.nvim` above, `nimp get|up` also work on *non-Nim repos* &
 things not in `packages.json`.  `nimp u`  runs in parallel and is usually very
 fast (10 seconds to git pull *the whole Nimbleverse* on a fast network) and only
 emits output for things not up-to-date/failing.
