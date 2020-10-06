@@ -1,0 +1,13 @@
+diff --git a/src/xcm.nim b/src/xcm.nim
+index dcd2a9d..b86e047 100644
+--- a/src/xcm.nim
++++ b/src/xcm.nim
+@@ -71,7 +71,7 @@ proc setOutputBlob(dpy: PDisplay, output: TRROutput, propName: string,
+     dpy, output, propAtom, XA_INTEGER, format.cint, PropModeReplace,
+     cast[ptr cuchar](blob), cint(size div (format.int shr 3)))
+
+-  discard XSync(dpy, 0.TBool)
++  discard XSync(dpy, 0.XBool)
+
+ proc setCTM(dpy: PDisplay, output: TRROutput, coeffs: openArray[float]) =
+   let ctm = coeffs.coeffsToCTM

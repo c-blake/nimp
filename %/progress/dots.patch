@@ -1,0 +1,13 @@
+diff --git a/src/progress.nim b/src/progress.nim
+index d386eff..f88ce8d 100644
+--- a/src/progress.nim
++++ b/src/progress.nim
+@@ -78,7 +78,7 @@ proc print(pb: ProgressBar) {.raises: [IOError], tags: [WriteIOEffect].} =
+ 
+   var completeBar = pb.complete.repeat(position)
+   if not isComplete:
+-    completeBar = completeBar[0 ..len(completeBar)] & pb.incompleteHead
++    completeBar = completeBar[0..len(completeBar)] & pb.incompleteHead
+ 
+   let
+     incompleteBar = pb.incomplete.repeat(pb.width - position)

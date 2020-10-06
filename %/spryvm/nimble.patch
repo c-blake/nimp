@@ -1,0 +1,14 @@
+diff --git a/spryvm.nimble b/spryvm.nimble
+index 1a514ea..e5ca0b0 100644
+--- a/spryvm.nimble
++++ b/spryvm.nimble
+@@ -10,7 +10,8 @@ requires "nim >= 1.2.0"
+ requires "python"
+ requires "ui"
+ requires "snappy"
+-requires "https://github.com/status-im/nim-rocksdb.git#5b1307cb1f4c85bb72ff781d810fb8c0148b1183"
++requires "rocksdb"
++#requires "https://github.com/status-im/nim-rocksdb.git#5b1307cb1f4c85bb72ff781d810fb8c0148b1183"
+ 
+ task test, "Run the tests":
+   withDir "tests":

@@ -1,0 +1,13 @@
+diff --git a/nimpb/compiler/compiler.nim b/nimpb/compiler/compiler.nim
+index cbaec0d..20b4fe4 100644
+--- a/nimpb/compiler/compiler.nim
++++ b/nimpb/compiler/compiler.nim
+@@ -7,7 +7,7 @@ import osproc
+ import strformat
+ import strutils
+ 
+-from generator import processFileDescriptorSet, ServiceGenerator, Service, ServiceMethod
++from generator1 import processFileDescriptorSet, ServiceGenerator, Service, ServiceMethod
+ export ServiceGenerator, Service, ServiceMethod
+ 
+ const

@@ -1,0 +1,13 @@
+diff --git a/nimpb/wkt/descriptor_pb.nim b/nimpb/wkt/descriptor_pb.nim
+index beca42f..960fee2 100644
+--- a/nimpb/wkt/descriptor_pb.nim
++++ b/nimpb/wkt/descriptor_pb.nim
+@@ -6,7 +6,7 @@ import json
+ import strutils
+ 
+ import nimpb/nimpb
+-import nimpb/json as nimpb_json
++import nimpb/json1 as nimpb_json
+ 
+ type
+     google_protobuf_FieldDescriptorProto_Type* {.pure.} = enum

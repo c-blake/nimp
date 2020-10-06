@@ -1,0 +1,13 @@
+diff --git a/nesm/generator.nim b/nesm/generator.nim
+index 293fbe7..fe55f9d 100644
+--- a/nesm/generator.nim
++++ b/nesm/generator.nim
+@@ -16,7 +16,7 @@ from objects import genObject
+ from basics import genBasic
+ from periodic import genPeriodic, genCStringDeserialize, genCStringSerialize
+ from enums import genEnum
+-from sets import genSet
++from sets1 import genSet
+
+ proc insert_source(length_declaration, source: NimNode,
+                    depth: Natural): NimNode  =
