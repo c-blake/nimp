@@ -4,7 +4,7 @@ Why `nimp` { pronounced like "chimp" and about as smart ;) }
 authors decide -- on just about everything (combined w/a resolution I have made
 to be a "less abstract" complainer).  Instead of trusting package authors to
 write a task that installs a binary executable, `nimble` tries to guess all it
-needs to do that.  This ends with second-guessing package authors too much and
+needs to do that.  This ends with second-guessing package authors too much &
 making the whole problem harder.
 
 As one example, nimble wants both specific and suspect "package structure" and
@@ -108,7 +108,8 @@ approval with *anyone*..neither `nimble` nor dependency maintainers.  If you are
 a package-user who cannot persuade a package-maintainer to fix up an origin repo
 then I am happy to take PRs for `%` fix-up scripts.
 
-Also, at present there seems little need for `==` or `<` version requirements --
-the only time multiple installed versions become needed.  Earlier versions of
-the Nim compiler itself seem far more valuable.  `nimp` does have some commented
-out code sketching how to provide a private hierarchy with whatever versions.
+At present there seems little need for `==` or `<` version requirements -- the
+only time multiple installed versions become needed.  Earlier versions of Nim
+itself seem far more valuable (and are already supported by `nimp`).  `nimp` has
+some commented out code sketching how to provide a private hierarchy with
+whatever versions.
