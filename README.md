@@ -108,7 +108,10 @@ and searching for Error: was a simple, easy thing for me to run/test.  Note that
 the automated fix up style here means `nimp` users need not rely on any real
 approval from *anyone*..neither `nimble` nor dependency maintainers.  If you are
 a package-user who cannot persuade a package-maintainer to fix up an origin repo
-then I am happy to take PRs for `%` fix-up scripts.
+then I am happy to take PRs for `%` fix-up scripts.  Also, for the 85% that do
+not install binary executables, the install action is really just git clone.
+I did test `nimp dump req` on the entire Nimbleverse and it also worked fine
+and produced a nice dependency graph for me.
 
 At present there seems little need for `==` or `<` version requirements -- the
 only time multiple installed versions become needed.  Earlier versions of Nim
