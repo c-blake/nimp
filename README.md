@@ -33,7 +33,7 @@ at least allow override of almost everything by the package.
 
 So, how does `nimp` work?
 =========================
-`nimp` needs nothing but the stdlib and the code is like 300 lines and the real
+`nimp` needs nothing but the stdlib and the code is like 300 lines and is a real
 reference to how it works.  It is all very YAGNI.  The 20 second usage summary
 is to `nimp get lc nim c -d:release` and `nimp up` to `git pull` in all repos.
 Slightly more detail is available by running `nimp` with no arguments.
