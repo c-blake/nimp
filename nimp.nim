@@ -26,7 +26,7 @@ let binDir   = getEnv("NIMP_BIN", vcRepos / "bin")  # execs
 let package  = getEnv("NIMP_PKG", "")               # current package
 """ # boilerplate NimScript setup for default progs
 
-proc n(x: string): string = x.toLower           # strutils.normalize?
+proc n(x: string): string = x.toLower.multiReplace(("_", ""))
 
 proc run(cmd, msg: string, quiet=false) =       # command harness
   if not quiet: echo cmd                        # verb run cmd|maybe quit
