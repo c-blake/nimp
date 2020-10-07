@@ -84,12 +84,12 @@ emits output for things not up-to-date/failing.
 How well does `nimp` work?
 ==========================
 `nimp` is still at a proof of concept stage. It may have numerous bugs/failings,
-but it works ok for me.  To test it, I took a snapshot of all nimble packages in
+but it works ok for me.  To test it, I cloned all clonable nimble packages in
 `packages.json` on 2020/10/04.  Then I tried to build (with a devel compiler)
-the 220 packages that had a non-empty `nimble` `bin` directive.  With scripts
-under `'%'` in this repo, I was able to build all the same packages that
-`nimble` could also successfully install.  (But for `nimwc` which needs a fix to
-use the VC head of one if its deps.)  I also tried it against the `nimx` library
+the 220 packages that with non-empty `nimble` `bin` directives.  With scripts
+under `'%'` in this repo, I could build all the same packages that `nimble`
+could also successfully install.  (But for `nimwc` which needs a fix to use the
+VC head of one if its deps.)  I also tried it against the `nimx` library
 package which has complex & non-nimble deps and `nimterop`, depended upon for
 code generation instead of depended upon for `import`.  No real problems.
 
