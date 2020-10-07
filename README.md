@@ -38,12 +38,13 @@ reference to how it works.  It is all very YAGNI.  The 20 second usage summary
 is to `nimp get lc nim c -d:release` and `nimp up` to `git pull` in all repos.
 Slightly more detail is available by running `nimp` with no arguments.
 
-As per above, `nimp` tries to not constrain but only assist package authors.
-The present architecture is generated-if-missing NimScripts a package author can
-tune or replace outright as desired.  `nimp` doesn't over-write pre-existing
-scripts, giving package authors total control.  {`nim.cfg --path` generation &
-nimble-compatibility `src/` symlink garbage are arguably guesswork that could be
-profitably delegated to package authors with generated defaults..}
+As per "Why", `nimp` assists but noes not constrain package authors & installers
+in an "open architecture" way.  The present design is generated-if-missing
+NimScripts a package author can tune or replace outright as desired.  `nimp`
+doesn't over-write pre-existing scripts, giving package authors total control.
+{`nim.cfg --path` generation & nimble-compatibility `src/` symlink garbage are
+arguably guesswork that could be profitably delegated to package authors with
+generated defaults..}
 
 Scripts are in `<myPackage>/"pkg/"` or `%/myPackage`.  There are "hooks" for the
 various package life cycle events.  `pkg/install.nims` compiles&installs binary
