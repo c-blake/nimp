@@ -111,8 +111,9 @@ a package-user who cannot persuade a package-maintainer to fix up an origin repo
 then I am happy to take PRs for `%` fix-up scripts.  Also, for the 85% that do
 not install binary executables, the install action is really just git clone.
 I did test `nimp dump req` on the entire Nimbleverse and it also worked fine
-and produced a nice dependency graph for me.  Oh, and I tested `nimp publish`
-when publishing `nimp` itself which worked fine. :)
+and produced a nice dependency graph for me.  Oh, and I tested `nimp init`
+converting the single file script to a nimble package and `nimp publish` when
+publishing `nimp` itself, both of which worked fine. :)
 
 At present there seems little need for `==` or `<` version requirements -- the
 only time multiple installed versions become needed.  Earlier versions of Nim
