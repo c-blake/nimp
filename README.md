@@ -17,13 +17,17 @@ layout, usage by clients is `git clone` with an optional `--path` augmentation
 by `nim.cfg/config.nims`.  Without augmentation, one `--path` entry covers a
 whole hierarchy of deps via `import foo/bar`.  With augmentation, client code
 can simply `import bar` - unless it's likely to be ambiguous in which case they
-`import foo/bar`.  Rather than support this simple mode of authorship/operation,
-`nimble` actively discourages it and makes various rules/abstractions about
-"hybrid" or not kinds of layouts and so on.  Over 91% of packages (700/768) with
-`src/` have only one `.nim` file there.  Besides being none of `nimble`'s
-business in the first place, it seems tilted toward rare executable and multi-
-module cases not common library cases.  As seen in the final section, the tilt
-also makes search path-based compatibility more of a headache.
+`import foo/bar`.
+
+Rather than support this simple mode of authorship/operation, `nimble` actively
+discourages it and makes various rules/abstractions about "hybrid" or not kinds
+of layouts and so on.  Over 91% of packages (700/768) with `src/` have only one
+`.nim` file there.  Besides being none of `nimble`'s business in the first
+place, it seems tilted toward rare executable and multi- module cases not common
+library cases.  As seen in the final section, `src/` makes search path-based
+compatibility have occasional collisions.  Pushing `src/` and then "reversing
+it" at install time is thus worse than having no package manager at all for the
+vast majority of current packages.
 
 "Guessing" can also fail/be limited in many other ways.  There may be media file
 assets or any number of do-this-at-install time needs.  Package authors, not
