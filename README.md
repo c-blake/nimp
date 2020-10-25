@@ -11,23 +11,23 @@ As one example, nimble wants both specific and suspect "package structure" and
 noisily complains when it does not get it.  It is suspect since 85% of `nimble`
 packages are pure source code libraries more akin to C++ template header libs or
 Pure Python `.py` files than to `.dll/.so` shared libs.  A natural layout of
-such packages, single or multi-module, is `pkg/[modA.nim, modB.nim]`.  (This
-notation converts to Nim `import` notation via deleting the ".nim".)  With this
-layout, usage by clients is `git clone` with an optional `--path` augmentation
-by `nim.cfg/config.nims`.  Without augmentation, one `--path` entry covers a
-whole hierarchy of deps via `import foo/bar`.  With augmentation, client code
-can simply `import bar` - unless it's likely to be ambiguous in which case they
-`import foo/bar`.
+such compile-time import packages (single or multi-module) is `pkg/[modA.nim,
+modB.nim]`.  (This notation converts to Nim `import` notation via deleting the
+".nim".)  With this layout, usage by clients is `git clone` with an optional
+`--path` augmentation by `nim.cfg/config.nims`.  Without augmentation, one
+`--path` entry covers a whole hierarchy of deps via `import foo/bar`.  With
+augmentation, client code can simply `import bar` - unless it's likely to be
+ambiguous in which case they `import foo/bar`.
 
 Rather than support this simple mode of authorship/operation, `nimble` actively
-discourages it and makes various rules/abstractions about "hybrid" or not kinds
-of layouts and so on.  Over 91% of packages (700/768) with `src/` have only one
-`.nim` file there.  Besides being none of `nimble`'s business in the first
-place, it seems tilted toward rare executable and multi- module cases not common
-library cases.  As seen in the final section, `src/` makes search path-based
-compatibility have occasional collisions.  Pushing `src/` and then "reversing
-it" at install time is thus worse than having no package manager at all for the
-vast majority of current packages.
+discourages it and makes various rules/abstractions about "hybrid" or not layout
+and so on.  Over 91% of packages (700/768) with `src/` have only one `.nim` file
+there.  Besides being none of `nimble`'s business in the first place, it seems
+tilted toward rare executable and multi-module cases not common library cases.
+As seen in the final section, `src/` makes search path-based compatibility have
+occasional collisions.  Pushing `src/` and then "reversing it" at install time
+is thus worse than having no package manager at all for the vast majority of
+current packages.
 
 "Guessing" can also fail/be limited in many other ways.  There may be media file
 assets or any number of do-this-at-install time needs.  Package authors, not
