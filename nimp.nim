@@ -3,7 +3,7 @@ if paramCount() < 1 or paramStr(1)[0] notin "gumdipU": echo """Usage:
   nimp g)et name|URI [nim c|cpp|.. opts]   clone&install name|URI & deps
   nimp u)p [baseDirName..]                 git pull listed|all repos
   nimp m)kpath                             make nim.cfg from repos
-  nimp d)ump {n)ame|r)equires|d)esc|l)ic}  print .nimble variables
+  nimp d)ump {n)ame|v)sn|r)eq|d)esc|l)ic}  print .nimble variables
   nimp i)nit [packageName]                 init a skeleton package
   nimp p)ub tag1 [tag2...]                 publish to github.com
 $NIMP - root of VC hierarchy|CWD; Run dump & pub INSIDE a pkg dir."""; quit(1)
@@ -73,7 +73,7 @@ proc multiSplitStrip(s: string): seq[string] =
     if result[i].len < 1: result.del(i)         # => empty loop.
 
 proc dumpIni(path: string) =
-  if paramCount() != 2: echo "Use: nimp dump (n|r|u|d|l)*"; quit(1)
+  if paramCount() != 2: echo "Use: nimp dump [nvrdl]*"; quit(1)
   var fs = newFileStream(path, fmRead)
   if fs != nil:
     var p: CfgParser
@@ -91,6 +91,7 @@ proc dumpIni(path: string) =
       of cfgKeyValuePair:
         if section == "": raise newException(ValueError, "")
         if   paramStr(2).startsWith("n") and e.key.n == "name": echo e.value
+        elif paramStr(2).startsWith("v") and e.key.n == "version": echo e.value
         elif paramStr(2).startsWith("r") and e.key.n == "requires":
           for v in e.value.multiSplitStrip: echo v
         elif paramStr(2).startsWith("d") and e.key.n == "description": echo e.value
@@ -113,6 +114,7 @@ template after(action: untyped, body: untyped): untyped = discard
 let pc = paramCount()
 if pc < 3: echo "Use: nim e dump.nims (n|r|u|d|l)*"; quit(1)
 if   paramStr(pc).startsWith("n"): echo name
+elif paramStr(pc).startsWith("v"): echo version
 elif paramStr(pc).startsWith("r"): #Eg. `ndf` puts multiple in ""
   for d in requiresData: (for dd in d.split(","): echo dd.strip)
 elif paramStr(pc).startsWith("d"): echo description
