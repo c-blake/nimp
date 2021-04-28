@@ -231,7 +231,7 @@ elif paramStr(1).startsWith("u"):               # UPDATE listed|all REPOS
   template a() {.dirty.} =
     let (lines, exCode) = p.readLines
     if lines.len > 1 or exCode != 0:
-      echo nms[i], ":(exCode=", exCode, ")"
+      echo "\e[7m", nms[i], ":(exCode=", exCode, ")\e[m"
       for ln in lines: echo "  ", ln
     p.close
   if doPkgs: # no JSON parse during => no pull packages in||
