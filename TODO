@@ -1,0 +1,3 @@
+makePath should maybe allow users to set order/priority of names.
+Right now thing are in "walkDir" order which is not even the same
+rsync'd filesystem to filesystem.
