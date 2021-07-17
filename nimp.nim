@@ -1,4 +1,4 @@
-import os, osproc, json, strutils, tables, streams, parsecfg, httpclient, times
+import std/[os,osproc,json,strutils,tables,streams,parsecfg,httpclient,times]
 if paramCount() < 1 or paramStr(1)[0] notin "gumdipU": echo """Usage:
   nimp g)et name|URI [nim c|cpp|.. opts]   clone&install name|URI & deps
   nimp u)p [baseDirName..]                 git pull listed|all repos
