@@ -51,7 +51,7 @@ when not declared(osproc.readLines):            # for old Nim compat.
 proc loadFromClone(): Table[string, string] =   # pkgnm->URI
   var alt: Table[string, string]
   let repo = vr/"packages"
-  if not existsDir(repo):
+  if not dirExists(repo):
     run("git clone " & official & " " & repo, "cannot clone packages")
   for p in parseJson(readFile(repo/"packages.json")):
     try: result[($p["name"]).n[1..^2]] = ($p["url"])[1..^2]
