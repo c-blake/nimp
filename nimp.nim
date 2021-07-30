@@ -12,6 +12,7 @@ let vr  = if "NIMP".getEnv(getCurrentDir()) == ".": getCurrentDir()
           else: getEnv("NIMP", getCurrentDir()) # VC Repos
 let sr  = "NIMP_SR".getEnv(vr/"%")              # scripts
 let co  = "NIMP_CO".getEnv("")                  # local checkouts
+let ucf = "NIMP_UCF".getEnv("UNSET") != "UNSET" # no auto-update nim.cfg
 let bin = "NIMP_BIN".getEnv(vr/"bin")           # executables
 putEnv("NIMP", vr)                              # propagate defaults to kids
 putEnv("NIMP_SR", sr)
@@ -240,8 +241,8 @@ elif paramStr(1).startsWith("u"):               # UPDATE listed|all REPOS
       proc(i: int, p: Process) = a)
   let x = execProcesses(cmds, opts, n = 32, afterRunEvent =
     proc(i: int, p: Process) = a)
-  writeFile(vr/"nim.cfg", makePath())           # optional?
-  quit(x)
+  if ucf: writeFile vr/"nim.cfg", makePath()
+  quit x
 elif paramStr(1).startsWith("m"):               # MAKE PATH IN nim.cfg
   writeFile(vr/"nim.cfg", makePath())
 elif paramStr(1).startsWith("d"):               # DUMP (not so end-user useful)
