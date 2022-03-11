@@ -290,7 +290,7 @@ elif paramStr(1).startsWith("p"):               # PUBLISH A PACKAGE
   const ghc = "github.com/"; const gh = "https://" & ghc
   const api = "https://api." & ghc
   const pk = "packages"; const nlp = "nim-lang/" & pk
-  let token = getEnv("NIMP_AUTH", "")           # get auth token | die
+  let token = getEnv("NIMP_AUTH", readFile(vr/".auth")) # get auth token | die
   if token.len == 0: quit("Get token@ " & gh & "settings/tokens/new\n" &
                           "Set NIMP_AUTH=That & try again", 1)
   let prx = getEnv("http_proxy", getEnv("https_proxy",
