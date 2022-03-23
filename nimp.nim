@@ -38,11 +38,6 @@ proc run(cmd, msg: string, quiet=false) =       # command harness
 template cd(new: string, body: untyped) =       # shell (cd new; body)
   let old = getCurrentDir(); setCurrentDir(new); body; setCurrentDir(old)
 
-when not declared(osproc.readLines):            # for old Nim compat.
-  proc readLines(p: Process): (seq[string], int) =
-    for line in p.outputStream.lines: result[0].add line
-    result[1] = p.waitForExit
-
 proc loadFromClone(): Table[string, string] =   # pkgnm->URI
   var alt: Table[string, string]
   let repo = vr/"packages"
