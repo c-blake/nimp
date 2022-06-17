@@ -201,6 +201,7 @@ proc pkGet(pk: string, nim: seq[string]) =      # Unpublished => pknm=basenm
           if nb.exes.len>0: mkInstall(pknm, nb.exes) # long-term -> pkgAuth
       writeFile(vr/"nim.cfg", makePath())       # deps update
       maybeRun(pknm, vr/pknm, "pkg"/"install", nim)
+  else: echo vr/pknm," exists.  Done.  You may want `nimp update`."
 
 if paramStr(1).startsWith("g"):                 # GET REPOS INSTALLING ALL DEPS
   pkGet(paramStr(2), commandLineParams()[2..^1])
