@@ -306,7 +306,6 @@ elif paramStr(1).startsWith("p"):               # PUBLISH A PACKAGE
     echo "10s wait"; sleep(10000)               # git pull w/exp.backoff?
   run("git pull " & gh & user & "/" & pk, "cannot fork-pull")
   run("git pull " & gh & nlp & ".git master", "cannot master-pull")
-  run("git push " & auth & " master", "cannot master push")
   let b = "add-" & pknm & ext
   run("git checkout -B " & b, "cannot make branch")
   var contents = parseFile("packages.json")
