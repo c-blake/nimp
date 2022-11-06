@@ -15,6 +15,7 @@ let sr  = "NIMP_SR".getEnv(vr/"%")              # scripts
 let co  = "NIMP_CO".getEnv("")                  # local checkouts
 let ucf = "NIMP_UCF".getEnv("UNSET") != "UNSET" # no auto-update nim.cfg
 let bin = "NIMP_BIN".getEnv(vr/"bin")           # executables
+let nime = "NIMP_NIME".getEnv("nim e --hint:conf:off") & " "
 putEnv("NIMP", vr)                              # propagate defaults to kids
 putEnv("NIMP_SR", sr)
 if co.len > 0: putEnv("NIMP_CO", co)
@@ -110,7 +111,7 @@ elif paramStr(pc).startsWith("r"): #Eg. `ndf` puts multiple in ""
   for d in requiresData: (for dd in d.split(","): echo dd.strip)
 elif paramStr(pc).startsWith("d"): echo description
 elif paramStr(pc).startsWith("l"): echo license""" & "\n")
-  run("nim e " & s & " " & prog & " " & paramStr(2), "bad " & prog, true)
+  run(nime & s & " " & prog & " " & paramStr(2), "bad " & prog, true)
 
 proc maybeRun(pknm, dir, name: string; args: seq[string] = @[]) =
   if not dir.dirExists: return
@@ -120,7 +121,7 @@ proc maybeRun(pknm, dir, name: string; args: seq[string] = @[]) =
     if fileExists(name & ".nim"):
       run("nim r " & name & ".nim" & args, name & ".nim failed")
     elif fileExists(name & ".nims"):            # run nims if no nim
-      run("nim e " & name & ".nims" & args, name & ".nims failed")
+      run(nime & name & ".nims" & args, name & ".nims failed")
 
 proc maybeWrite(path, contents: string) =       # non clobbering writeFile
   if not path.fileExists: writeFile(path, contents)
