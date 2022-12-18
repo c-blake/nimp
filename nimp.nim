@@ -47,9 +47,9 @@ proc loadFromClone(): Table[string, string] =   # pkgnm->URI
     run("git clone " & official & " " & repo, "cannot clone packages")
   for p in parseJson(readFile(repo/"packages.json")):
     try: result[($p["name"]).n[1..^2]] = ($p["url"])[1..^2]
-    except:                                     # [1..^2] slice kills '"'s
+    except CatchableError:                      # [1..^2] slice kills '"'s
       try: alt[($p["name"]).n[1..^2]] = ($p["alias"]).n[1..^2]
-      except: stderr.write "problem with: ", p, "\n"
+      except CatchableError: stderr.write "problem with: ", p, "\n"
   for k, v in alt: result[k] = result[v]        # apply aliases
 let pkgs = loadFromClone()                      # decl global early
 discard existsOrCreateDir(sr)
@@ -241,7 +241,7 @@ elif paramStr(1).startsWith("d"):               # DUMP (not so end-user useful)
   let path = nimblePath()
   if path.len > 0:
     try: dumpIni(path)                          # Archaic ini file fmt
-    except: dumpScript(path)                    # New style NimScript fmt
+    except CatchableError: dumpScript(path)     # New style NimScript fmt
   else: stderr.write "No .nimble in CWD\n"; quit(1)
 elif paramStr(1).startsWith("i"):               # INIT A .nimble FILE
   var pknm = getCurrentDir().lastPathPart.n
@@ -304,7 +304,7 @@ elif paramStr(1).startsWith("p"):               # PUBLISH A PACKAGE
   run("git init", "cannot git init")
   if not haveFork():
     try: echo "FORK.."; discard web.postContent(api & "repos/" & nlp & "/forks")
-    except: quit("could not fork on github", 1)
+    except CatchableError: quit("could not fork on github", 1)
     echo "10s wait"; sleep(10000)               # git pull w/exp.backoff?
   run("git pull " & gh & user & "/" & pk, "cannot fork-pull")
   run("git pull " & gh & nlp & ".git master", "cannot master-pull")
@@ -320,4 +320,4 @@ elif paramStr(1).startsWith("p"):               # PUBLISH A PACKAGE
     let j = web.postContent(api & "repos/" & nlp & "/pulls", """{"title":
 "Add $1", "head": "$2:$3", "base": "master"}""" % [pknm, user, b])
     echo "Made pull request.  See " & j.parseJson{"html_url"}.getStr
-  except: echo "cannot make pull request"
+  except CatchableError: echo "cannot make pull request"
