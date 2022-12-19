@@ -86,7 +86,7 @@ proc dumpIni(path: string) =
         elif paramStr(2).startsWith("v") and e.key.n == "version": echo e.value
         elif paramStr(2).startsWith("r") and e.key.n == "requires":
           for v in e.value.multiSplitStrip: echo v
-        elif paramStr(2).startsWith("d") and e.key.n == "description": echo e.value
+        elif paramStr(2).startsWith("d") and e.key.n=="description":echo e.value
         elif paramStr(2).startsWith("l") and e.key.n == "license": echo e.value
     p.close # also closes fs
 
