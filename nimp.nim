@@ -50,7 +50,7 @@ proc loadFromClone(): Table[string, string] =   # pkgnm->URI
     except CatchableError:                      # [1..^2] slice kills '"'s
       try: alt[($p["name"]).n[1..^2]] = ($p["alias"]).n[1..^2]
       except CatchableError: stderr.write "problem with: ", p, "\n"
-  for k, v in alt: result[k] = result[v]        # apply aliases
+  for k, v in alt: result[k] = result[v][0..^1] #COPY apply aliases
 let pkgs = loadFromClone()                      # decl global early
 discard existsOrCreateDir(sr)
 
