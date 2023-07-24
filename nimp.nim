@@ -100,6 +100,7 @@ proc dumpScript(path: string, prog = "pkg"/"dump.nims") =
 var name, url, description, license: string
 proc getPkgDir(): string = getCurrentDir()
 proc thisDir(): string = getPkgDir()
+template task(name:untyped; description:string; body:untyped): untyped = discard
 template before(action: untyped, body: untyped): untyped = discard
 template after(action: untyped, body: untyped): untyped = discard
 """ & dotNimble & "\n" & """
