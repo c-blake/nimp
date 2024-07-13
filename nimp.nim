@@ -1,22 +1,14 @@
 import std/[os,osproc,json,strutils,tables,streams,parsecfg,httpclient,times]
 when not declared(File): import std/syncio
-if paramCount() < 1 or paramStr(1)[0] notin "gumdipU": echo """Usage:
-  nimp g)et name|URI [nim c|cpp|.. opts]   clone&install name|URI & deps
-  nimp u)p [baseDirName..]                 git pull listed|all repos
-  nimp m)kpath                             make nim.cfg from repos
-  nimp d)ump {n)ame|v)sn|r)eq|d)esc|l)ic}  print .nimble variables
-  nimp i)nit [packageName]                 init a skeleton package
-  nimp p)ub tag1 [tag2...]                 publish to github.com
-$NIMP - root of VC hierarchy|CWD; Run dump & pub INSIDE a pkg dir."""; quit(1)
 const official = "https://github.com/nim-lang/packages"
-let vr  = if "NIMP".getEnv(getCurrentDir()) == ".": getCurrentDir()
-          else: getEnv("NIMP", getCurrentDir()) # VC Repos
-let sr  = "NIMP_SR".getEnv(vr/"%")              # scripts
-let co  = "NIMP_CO".getEnv("")                  # local checkouts
-let ucf = "NIMP_UCF".getEnv("UNSET") != "UNSET" # no auto-update nim.cfg
-let bin = "NIMP_BIN".getEnv(vr/"bin")           # executables
-let nime = "NIMP_NIME".getEnv("nim e --hint:conf:off") & " "
-putEnv("NIMP", vr)                              # propagate defaults to kids
+let vr   = if "NIMP".getEnv(getCurrentDir()) == ".": getCurrentDir()
+           else: getEnv "NIMP", getCurrentDir() # VC Repos
+let sr   = "NIMP_SR".getEnv(vr/"%")             # ScRipts
+let co   = "NIMP_CO".getEnv("")                 # local OheckOuts
+let ucf  = "NIMP_UCF".getEnv("UNSET")!="UNSET"  # User-CF: No auto-up nim.cfg
+let bin  = "NIMP_BIN".getEnv(vr/"bin")          # Binary Executables
+let nimE = "NIMP_NIME".getEnv("nim e --hint:conf:off") & " "
+putEnv("NIMP", vr)                              # Propagate defaults to kids
 putEnv("NIMP_SR", sr)
 if co.len > 0: putEnv("NIMP_CO", co)
 putEnv("NIMP_BIN", bin)
@@ -112,7 +104,7 @@ elif paramStr(pc).startsWith("r"): #Eg. `ndf` puts multiple in ""
   for d in requiresData: (for dd in d.split(","): echo dd.strip)
 elif paramStr(pc).startsWith("d"): echo description
 elif paramStr(pc).startsWith("l"): echo license""" & "\n")
-  run(nime & s & " " & prog & " " & paramStr(2), "bad " & prog, true)
+  run(nimE & s & " " & prog & " " & paramStr(2), "bad " & prog, true)
 
 proc maybeRun(pknm, dir, name: string; args: seq[string] = @[]) =
   if not dir.dirExists: return
@@ -122,7 +114,7 @@ proc maybeRun(pknm, dir, name: string; args: seq[string] = @[]) =
     if fileExists(name & ".nim"):
       run("nim r " & name & ".nim" & args, name & ".nim failed")
     elif fileExists(name & ".nims"):            # run nims if no nim
-      run(nime & name & ".nims" & args, name & ".nims failed")
+      run(nimE & name & ".nims" & args, name & ".nims failed")
 
 proc maybeWrite(path, contents: string) =       # non clobbering writeFile
   if not path.fileExists: writeFile(path, contents)
@@ -206,16 +198,15 @@ proc pkGet(pk: string, nim: seq[string]) =      # Unpublished => pknm=basenm
       maybeRun(pknm, vr/pknm, "pkg"/"install", nim)
   else: echo vr/pknm," exists.  Done.  You may want `nimp update`."
 
-if paramStr(1).startsWith("g"):                 # GET REPOS INSTALLING ALL DEPS
-  pkGet(paramStr(2), commandLineParams()[2..^1])
-elif paramStr(1).startsWith("U"):               # UPDATE 1 REPO VIA git pull
+proc pkUp1() =                          # UPDATE 1 REPO VIA git pull
   if paramCount() != 2: quit(1)                 # This is really just for non-||
   let pknm = paramStr(2)                        # update of the `packages` pkg.
   cd vr/pknm:
     maybeRun(pknm, sr/pknm, "pre_pull")
     if execCmd("git pull") != 0: quit("cannot pull", 1)
     maybeRun(pknm, sr/pknm, "post_pull")
-elif paramStr(1).startsWith("u"):               # UPDATE listed|all REPOS
+
+proc pkUp(): int =                      # UPDATE listed|all REPOS
   const opts = {poUsePath, poStdErrToStdOut}
   var nms, cmds: seq[string]                    # Parallel for network..
   var doPkgs = false                            # ..more than CPU.
@@ -230,21 +221,19 @@ elif paramStr(1).startsWith("u"):               # UPDATE listed|all REPOS
     p.close
   if doPkgs: # no JSON parse during => no pull packages in||
     var nms = ["packages"]; var cmds = ["nimp U packages"]
-    discard execProcesses(cmds, opts, afterRunEvent =
-      proc(i: int, p: Process) = a)
-  let x = execProcesses(cmds, opts, n = 32, afterRunEvent =
-    proc(i: int, p: Process) = a)
+    discard execProcesses(cmds, opts, afterRunEvent=proc(i:int, p:Process) = a)
+  let x = execProcesses(cmds, opts, n=32, afterRunEvent=proc(i:int,p:Process)=a)
   if ucf: writeFile vr/"nim.cfg", makePath()
-  quit x
-elif paramStr(1).startsWith("m"):               # MAKE PATH IN nim.cfg
-  writeFile(vr/"nim.cfg", makePath())
-elif paramStr(1).startsWith("d"):               # DUMP (not so end-user useful)
+  x
+
+proc pkDump() =                         # DUMP (not so end-user useful)
   let path = nimblePath()
   if path.len > 0:
     try: dumpIni(path)                          # Archaic ini file fmt
     except CatchableError: dumpScript(path)     # New style NimScript fmt
   else: stderr.write "No .nimble in CWD\n"; quit(1)
-elif paramStr(1).startsWith("i"):               # INIT A .nimble FILE
+
+proc pkInit() =                         # INIT A .nimble FILE
   var pknm = getCurrentDir().lastPathPart.n
   if paramCount() >= 2:
     discard existsOrCreateDir(paramStr(2)); setCurrentDir(paramStr(2))
@@ -268,7 +257,8 @@ for e in listFiles("tests"):
              "rmFile binDir/\"" & pknm & "\"\n" &
              "rmDir vcRepos/\"" & pknm & "\"\n")
   maybeWrite(pknm & ".nim", "# New nim package\n")
-elif paramStr(1).startsWith("p"):               # PUBLISH A PACKAGE
+
+proc pkPub() =                          # PUBLISH A PACKAGE
   let nimble = nimblePath().lastPathPart
   if nimble.len < 8: quit("Need .nimble file in CWD", 1)
   let pknm = nimble[0..^(".nimble".len+1)]
@@ -322,3 +312,23 @@ elif paramStr(1).startsWith("p"):               # PUBLISH A PACKAGE
 "Add $1", "head": "$2:$3", "base": "master"}""" % [pknm, user, b])
     echo "Made pull request.  See " & j.parseJson{"html_url"}.getStr
   except CatchableError: echo "cannot make pull request"
+
+when isMainModule:      # CLI; Also see top of this file for environ var config
+  const use = """Usage:
+  nimp g)et name|URI [nim c|cpp|.. opts]   clone&install name|URI & deps
+  nimp u)p [baseDirName..]                 git pull listed|all repos
+  nimp m)kpath                             make nim.cfg from repos
+  nimp d)ump {n)ame|v)sn|r)eq|d)esc|l)ic}  print .nimble variables
+  nimp i)nit [packageName]                 init a skeleton package
+  nimp p)ub tag1 [tag2...]                 publish to github.com
+$NIMP - root of VC hierarchy|CWD; Run dump & pub INSIDE a pkg dir."""
+  if paramCount() < 1: echo use; quit 0
+  let c = paramStr(1)
+  if   c.startsWith("g"): pkGet paramStr(2), commandLineParams()[2..^1]
+  elif c.startsWith("U"): pkUp1()      # UPDATE 1 REPO VIA git pull
+  elif c.startsWith("u"): quit pkUp()  # UPDATE listed|all REPOS
+  elif c.startsWith("m"): writeFile vr/"nim.cfg", makePath() # MAKE nim.cfg
+  elif c.startsWith("d"): pkDump()     # DUMP (not so end-user useful)
+  elif c.startsWith("i"): pkInit()     # INIT A .nimble FILE
+  elif c.startsWith("p"): pkPub()      # PUBLISH A PACKAGE
+  else: stderr.write "unknown subcommand: \"", c, "\"\n", use, "\n"; quit 1
