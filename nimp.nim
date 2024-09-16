@@ -23,10 +23,10 @@ let package  = getEnv("NIMP_PKG", "")               # current package
 
 proc n(x: string): string = x.toLower.multiReplace(("_", ""))
 
-proc run(cmd, msg: string, quiet=false) =       # command harness
+proc run(cmd, msg: string, quiet=false): bool {.discardable.} = #Command Harness
   if not quiet: echo cmd                        # verb run cmd|maybe quit
   if execCmd(cmd) != 0:
-    if msg.startsWith("warning: "): echo msg
+    if msg.startsWith("warning: "): echo msg; return true
     else: quit(msg, 1)
 
 template cd(new: string, body: untyped) =       # shell (cd new; body)
@@ -60,8 +60,7 @@ proc dumpIni(path: string) =
   if paramCount() != 2: echo "Use: nimp dump [nvrdl]*"; quit(1)
   var fs = newFileStream(path, fmRead)
   if fs != nil:
-    var p: CfgParser
-    open(p, fs, path)
+    var p: CfgParser; p.open fs, path
     var section = ""
     while true:
       var e = p.next
@@ -69,9 +68,8 @@ proc dumpIni(path: string) =
       of cfgEof: break
       of cfgError, cfgOption: raise newException(ValueError, "")
       of cfgSectionStart:
-        if e.key.n notin ["deps", "dependencies", "package"]:
-          raise newException(ValueError, "")
-        else: section = e.key.n
+        if (let s = e.section.n; s in ["deps", "dependencies", "package"]):
+          section = e.section.n
       of cfgKeyValuePair:
         if section == "": raise newException(ValueError, "")
         if   paramStr(2).startsWith("n") and e.key.n == "name": echo e.value
@@ -82,28 +80,37 @@ proc dumpIni(path: string) =
         elif paramStr(2).startsWith("l") and e.key.n == "license": echo e.value
     p.close # also closes fs
 
-proc dumpScript(path: string, prog = "pkg"/"dump.nims") =
+proc dumpScript(path: string, prog="dump.nims") = # Some .nimble use relat.paths
   const s = "--skipUserCfg:on --skipParentCfg:on --skipProjCfg:on" &
             " --hints:off -w:off --path=. --path=src"
   if not prog.fileExists:                       # Allow pkg author override
-    discard existsOrCreateDir("pkg")
+    discard existsOrCreateDir("pkg")  # Make pkg/ even if not using it now
     let dotNimble = path.readFile
-    writeFile(prog, """import strformat, strutils, tables, os
-var name, url, description, license: string
+    let pfx = """import strformat, strutils, tables, os
+var name, url, description, license: string; var installExt: seq[string]
+var namedBin: Table[string, string]
 proc getPkgDir(): string = getCurrentDir()
 proc thisDir(): string = getPkgDir()
+proc existsDir(s: string): bool = dirExists s
+proc getPaths*(): seq[string] = discard # literally no one uses this
+proc getPathsClause*(): string = discard
 template task(name:untyped; description:string; body:untyped): untyped = discard
+template taskRequires(x: varargs[string, `$`]) = discard
 template before(action: untyped, body: untyped): untyped = discard
-template after(action: untyped, body: untyped): untyped = discard
-""" & dotNimble & "\n" & """
-let pc = paramCount()
+template after(action: untyped, body: untyped): untyped = discard"""
+    let sfx = """let pc = paramCount()
 if pc < 3: echo "Use: nim e dump.nims (n|r|u|d|l)*"; quit(1)
 if   paramStr(pc).startsWith("n"): echo name
 elif paramStr(pc).startsWith("v"): echo version
 elif paramStr(pc).startsWith("r"): #Eg. `ndf` puts multiple in ""
   for d in requiresData: (for dd in d.split(","): echo dd.strip)
 elif paramStr(pc).startsWith("d"): echo description
-elif paramStr(pc).startsWith("l"): echo license""" & "\n")
+elif paramStr(pc).startsWith("l"): echo license"""
+    writeFile prog, pfx & "\n" & dotNimble & "\n" & sfx & "\n" # Try unindented
+    if run(nimE & s & " " & prog & " " & paramStr(2),     # gen block-indented
+           "warning: unindented " & prog & " failed", true):
+     writeFile prog,pfx & "\nblock:\n" & indent(dotNimble,2) & "\n" & sfx & "\n"
+    else: return # run()false=>success=>return else fall through & try 2nd form
   run(nimE & s & " " & prog & " " & paramStr(2), "bad " & prog, true)
 
 proc maybeRun(pknm, dir, name: string; args: seq[string] = @[]) =
