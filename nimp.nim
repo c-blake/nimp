@@ -13,7 +13,7 @@ putEnv("NIMP_SR", sr)
 if co.len > 0: putEnv("NIMP_CO", co)
 putEnv("NIMP_BIN", bin)
 putEnv("PATH", bin & ":" & getEnv("PATH", ""))
-let nimpDirs = """import os, strutils   # shared .nims header
+let nimpDirs = """import std/[os, strutils]           # shared .nims header
 let vcRepos  = getEnv("NIMP", ".")                  # VC hierarchy root
 let checkout = getEnv("NIMP_CO", "")                # local checkout|""
 let scripts  = getEnv("NIMP_SR", vcRepos / "%")     # scripts
@@ -86,7 +86,7 @@ proc dumpScript(path: string, prog="dump.nims") = # Some .nimble use relat.paths
   if not prog.fileExists:                       # Allow pkg author override
     discard existsOrCreateDir("pkg")  # Make pkg/ even if not using it now
     let dotNimble = path.readFile
-    let pfx = """import strformat, strutils, tables, os
+    let pfx = """import std/[strformat, strutils, tables, os]
 var name, url, description, license: string; var installExt: seq[string]
 var namedBin: Table[string, string]
 proc getPkgDir(): string = getCurrentDir()
@@ -256,7 +256,7 @@ version     = "0.1.0"
 requires "nim >= """ & NimVersion & "\"\n")
   discard existsOrCreateDir("pkg")
   discard existsOrCreateDir("tests")
-  maybeWrite("pkg"/"test.nims", """import os, strutils
+  maybeWrite("pkg"/"test.nims", """import std/[os, strutils]
 for e in listFiles("tests"):
   if e.endsWith(".nim"): exec "nim r " & e""" & '\n')
   mkInstall(pknm, [pknm])
