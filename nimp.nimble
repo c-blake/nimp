@@ -1,5 +1,5 @@
 # Package
-version     = "0.2.3"
+version     = "0.3.0"
 author      = "Charles Blake"
 description = "A package manager that delegates to package authors"
 license     = "MIT/ISC"
