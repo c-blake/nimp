@@ -154,7 +154,7 @@ proc exes(dotNimble: string): seq[string] =
     if ln.startsWith("bin "):                   # ..needs more than this!
       for word in ln[4..^1].split(delim):       # only for back/cross-
         if word.len > 0: result.add word        # ..nimble compatiblity!
-                                               
+
 proc postCheckout(pknm: string) =               # duktape(litestore) breaks
   maybeRun(pknm, sr/pknm, "post_checkout")      #..and libgit2(but unused)
   if "src".dirExists and not pknm.dirExists:    # cross/back compat with..
