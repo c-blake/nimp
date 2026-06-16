@@ -1,8 +1,10 @@
 import std/[os,osproc,json,strutils,tables,streams,parsecfg,httpclient,times]
 when not declared(File): import std/syncio
 const official = "https://github.com/nim-lang/packages"
-let vr   = if "NIMP".getEnv(getCurrentDir()) == ".": getCurrentDir()
-           else: getEnv "NIMP", getCurrentDir() # VC Repos
+let NIMP = if "NIMP".existsEnv: "NIMP".getEnv
+  elif "XDG_CONFIG_HOME".existsEnv: readFile("XDG_CONFIG_HOME".getEnv / "nimp")
+  else: getCurrentDir()
+let vr   = if NIMP == ".": getCurrentDir() else: NIMP # VC Repos
 let sr   = "NIMP_SR".getEnv(vr/"%")             # ScRipts
 let co   = "NIMP_CO".getEnv("")                 # local OheckOuts
 let ucf  = "NIMP_UCF".getEnv("UNSET")!="UNSET"  # User-CF: No auto-up nim.cfg
